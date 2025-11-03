@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Photography Price Calculator – Villa for You</title>
+  <style>
+    :root{
+      --bg:#0a0b10;--card:#10131c;--text:#f2f5fb;--muted:#8a93a6;
+      --accent:linear-gradient(90deg,#7afcff,#fe8cff);
+      --ok:#10b981;--warn:#fbbf24;--bad:#f87171;--border:#1a1d2a;
+      --radius:22px;--shadow:0 8px 24px rgba(0,0,0,.35)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Inter',system-ui,Segoe UI,Roboto;background:radial-gradient(900px 600px at 20% 0%,#121624,#0a0b10),var(--bg);color:var(--text)}
+    .wrap{max-width:1100px;margin:40px auto;padding:0 24px}
+    h1{font-size:30px;margin:0 0 6px;font-weight:700}
+    .sub{color:var(--muted);margin-bottom:28px;font-size:15px}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,#111522,#0b0e16);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card .hd{padding:18px 18px 0}
+    .card .bd{padding:18px}
+    h2{font-size:18px;margin:0 0 10px}
+    .pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+    .pill{padding:8px 14px;border-radius:999px;border:1px solid #23273a;background:#151a26;color:#d0d5e4;font-weight:500;cursor:pointer;transition:.2s}
+    .pill.active{background:linear-gradient(90deg,#7afcff,#fe8cff);color:#0a0b10;font-weight:600}
+    label{font-size:14px;color:var(--text)}
+    input,select{background:#0e1221;border:1px solid #1d2437;color:var(--text);border-radius:12px;padding:8px 10px;min-width:100px}
+    .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin:8px 0}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    .chip{padding:6px 10px;border:1px solid #252a3a;border-radius:12px;background:#141824;font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer}
+    .chip input{transform:scale(1.1)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px 12px;border-bottom:1px dashed #1d2336;font-size:14px}
+    th{text-align:left;color:#aab3c5;font-weight:600}
+    .right{text-align:right}
+    .muted{color:var(--muted)}
+    .totals{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    .tot-card{border:1px solid var(--border);background:#0d111b;border-radius:16px;padding:16px}
+    .tot-card h3{margin:0 0 6px;font-size:14px;color:#cbd5e1}
+    .tot-card .big{font-size:28px;font-weight:800;background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .pos{color:var(--ok)}.neg{color:var(--bad)}
+    .footer{margin-top:20px;color:var(--muted);font-size:12px}
+    .row select{background:#0e1221;border:1px solid #1d2437;color:var(--text);border-radius:12px;padding:8px 10px}
+    .badge{display:inline-block;margin-top:8px;font-size:11px;border:1px solid #28304a;border-radius:10px;padding:4px 8px;color:#9db1ff}
+  </style>
+</head>
+<body>
+<a href="https://www.villaforyou.com" target="_top"><img src="../01_VFY-logo-staand-origineel-RGB white.jpg" width="75" height="52" alt=""></a>
+<div class="wrap">
+  <h1>Photography Price Calculator</h1>
+    <div class="sub">Select your shoot type and options to instantly compare <strong>new</strong> vs <strong>previous</strong> pricing.</div>
+<div class="grid">
+    <div class="card">
+        <div class="hd"><h2>Photoshoot setup</h2>
+        </div>
+        <div class="bd">
+          <div class="pills" id="shootType">
+            <div class="pill active" data-type="intExt">Interior + exterior</div>
+            <div class="pill" data-type="int">Interior only</div>
+            <div class="pill" data-type="ext">Exterior only</div>
+            <div class="pill" data-type="custom">Custom</div>
+          </div>
+          <div id="customModules" style="display:none">
+            <div class="chips">
+              <label class="chip"><input type="checkbox" id="modInt"> Interior</label>
+              <label class="chip"><input type="checkbox" id="modExt"> Exterior</label>
+              <label class="chip"><input type="checkbox" id="modAI"> AI Editing</label>
+            </div>
+          </div>
+          <details id="aiPanel" style="margin-top:6px;">
+            <summary class="muted" style="font-size:13px;cursor:pointer;">Optional: AI‑edited photos</summary>
+            <div class="row"><label>AI‑edited photos</label><input type="number" id="aiCount" min="0" value="0"></div>
+          </details>
+          <div class="row"><label>Bedrooms</label><input type="number" id="bedrooms" min="0" value="3"></div>
+          <div class="row"><label>Distance (one-way, km)</label><input type="number" id="distance" min="0" value="0"></div>
+          <div class="row"><label><em>Legacy season (for comparison)</em></label>
+            <select id="legacySeason">
+              <option value="summer" selected>Summer</option>
+              <option value="winter">Winter</option>
+            </select>
+          </div>
+          <div class="chips">
+            <label class="chip"><input type="checkbox" id="roundtrip" checked> Return trip (2×)</label>
+            <label class="chip"><input type="checkbox" id="optSnow"> Snow</label>
+            <label class="chip"><input type="checkbox" id="optDrone"> Drone</label>
+          </div>
+          <div class="muted" style="font-size:12px; margin-top:6px;">Note: <strong>Styling fee €10</strong> is <em>per day</em> and always applied (not per shoot).</div>
+        </div>
+    </div>
+      <div class="card">
+        <div class="hd"><h2>Price overview</h2>
+        </div>
+        <div class="bd">
+          <table id="breakdown"><thead><tr><th>Item</th><th class="right">New (€)</th><th class="right">Old (€)</th><th class="right">Δ</th></tr></thead><tbody id="rows"></tbody><tfoot><tr><td><strong>Total</strong></td><td class="right" id="totNew">€0</td><td class="right" id="totPrev">—</td><td class="right" id="totDiff">—</td></tr></tfoot></table>
+          <div class="totals">
+            <div class="tot-card"><h3>New total</h3>
+            <div class="big" id="bigNew">€0</div></div><div class="tot-card"><h3>Difference</h3><div class="big" id="bigDiff">—</div></div></div>
+          <div class="footer">Mileage = rate × (distance ×2 if return selected). Large home surcharge applies at 4+ bedrooms. Styling fee is €10 per day (always applied; not per shoot). 
+        </div>
+      </div>
+  </div>
+</div>
+<script>
+// ===== Helpers =====
+const el=id=>document.getElementById(id);
+const money=v=>`€${(v||0).toFixed(2)}`.replace('.',',');
+
+// ===== New pricing (modular) =====
+const NEW = { INT:70, EXT:45, AI:25, KM:0.12, SNOW:20, BIG:20, DRONE:25, STYLING:10 };
+
+// ===== Legacy pricing (bundled by distance & season) =====
+const LEGACY = {
+  lt50: { exterior:{winter:63,summer:48}, interior_lt3:73, interior_gte4:94, combo:{winter_lt3:120,winter_gte4:141,summer_lt3:105,summer_gte4:126} },
+  mid50_100: { exterior:{winter:73,summer:58}, interior_lt3:84, interior_gte4:105, combo:{winter_lt3:130,winter_gte4:151,summer_lt3:115,summer_gte4:136} },
+  gt100: { exterior:{winter:90,summer:74}, interior_lt3:110, interior_gte4:130, combo:{winter_lt3:147,winter_gte4:168,summer_lt3:131,summer_gte4:152} }
+};
+const tierFromKm=k=> (k<50?'lt50':(k<=100?'mid50_100':'gt100'));
+
+// ===== State =====
+let shootType='intExt';
+
+// ===== UI wiring =====
+const typeButtons=document.querySelectorAll('#shootType .pill');
+typeButtons.forEach(btn=>btn.onclick=()=>{typeButtons.forEach(b=>b.classList.remove('active'));btn.classList.add('active');shootType=btn.dataset.type;el('customModules').style.display=(shootType==='custom')?'block':'none';recalc();});
+['modInt','modExt','modAI','aiCount','distance','roundtrip','bedrooms','optSnow','optDrone','legacySeason'].forEach(id=>{const node=el(id); if(node){node.addEventListener('input',recalc);} });
+
+// ===== Core calc =====
+function legacyPrice(hasInt,hasExt,km,season,bedrooms){
+  const t = LEGACY[tierFromKm(km)], g4 = bedrooms>=4;
+  if(hasInt && hasExt){ return t.combo[`${season}_${g4?'gte4':'lt3'}`]; }
+  if(hasInt){ return g4 ? t.interior_gte4 : t.interior_lt3; }
+  if(hasExt){ return t.exterior[season]; }
+  return 0;
+}
+
+function recalc(){
+  // Auto-season: strictly bind to Snow (unchecked → Summer, checked → Winter)
+  if (el('legacySeason')) el('legacySeason').value = (el('optSnow')?.checked) ? 'winter' : 'summer';
+
+  // Determine selected modules
+  let useInt=false,useExt=false,useAI=false;
+  if(shootType==='intExt'){useInt=useExt=true}
+  else if(shootType==='int'){useInt=true}
+  else if(shootType==='ext'){useExt=true}
+  else if(shootType==='custom'){useInt=el('modInt')?.checked||false;useExt=el('modExt')?.checked||false;useAI=el('modAI')?.checked||false}
+
+  const aiCount = parseFloat(el('aiCount')?.value)||0;
+  const kmOne   = parseFloat(el('distance')?.value)||0;
+  const kmTotal = kmOne * (el('roundtrip')?.checked?2:1);
+  const beds    = parseFloat(el('bedrooms')?.value)||0;
+  const snow    = !!(el('optSnow')?.checked);
+  const drone   = !!(el('optDrone')?.checked);
+  const season  = (el('legacySeason')?.value)||'summer';
+
+  // Build rows
+  const rows=[]; let newTotal=0, oldTotal=0, anyOld=false;
+  const push=(label,newV,oldV)=>{
+    const diff=(oldV!=null)?(newV-oldV):null;
+    const pct=(oldV>0 && diff!=null)? (diff/oldV*100) : null;
+    const cls=(diff==null)?'muted':(diff>0?'pos':diff<0?'neg':'muted');
+    const diffStr=(diff==null)?'—':((diff>0?'+':'')+money(diff));
+    const pctStr=(pct==null)?'':` (<span class="${cls}">${pct.toFixed(1)}%</span>)`;
+    rows.push(`<tr><td>${label}</td><td class='right'>${money(newV)}</td><td class='right'>${oldV==null?'—':money(oldV)}</td><td class='right ${cls}'>${diffStr}${pctStr}</td></tr>`);
+    newTotal+=newV; if(oldV!=null){oldTotal+=oldV; anyOld=true;}
+  };
+
+  // Base (combine I+E when both selected)
+  if(useInt && useExt){
+    push('Interior + Exterior', NEW.INT+NEW.EXT, legacyPrice(true,true,kmOne,season,beds));
+  } else if(useInt){
+    push('Interior', NEW.INT, legacyPrice(true,false,kmOne,season,beds));
+  } else if(useExt){
+    push('Exterior', NEW.EXT, legacyPrice(false,true,kmOne,season,beds));
+  }
+
+  // AI edits
+  if(((shootType==='custom'&&useAI)||shootType!=='custom') && aiCount>0){ push(`AI editing × ${aiCount}`, NEW.AI*aiCount, null); }
+
+  // Mileage (no legacy equivalent)
+  if(kmTotal>0){ push(`Mileage (${kmTotal} km)`, NEW.KM*kmTotal, null); }
+
+  // Surcharges (legacy: Drone 51.50, Styling 10 per day; Large home and Snow have no explicit old rows)
+  if(beds>=4){ push('Large home surcharge', NEW.BIG, null); }
+  if(snow){ push('Snow surcharge', NEW.SNOW, null); }
+  if(drone){ push('Drone photography', NEW.DRONE, 51.5); }
+  // Styling always applies (per day)
+  push('Styling (per day)', NEW.STYLING, 10);
+
+  // Render totals
+  el('rows').innerHTML = rows.join('') || `<tr><td colspan='4' class='muted'>Select a shoot type or options to begin…</td></tr>`;
+  el('totNew').textContent = money(newTotal);
+  el('totPrev').textContent = anyOld ? money(oldTotal) : '—';
+  const diff = anyOld ? (newTotal - oldTotal) : null;
+  const pct = (anyOld && oldTotal>0) ? (diff/oldTotal*100) : null;
+  const cls = (diff==null)?'muted':(diff>0?'pos':diff<0?'neg':'muted');
+  el('totDiff').innerHTML = (diff==null) ? '—' : ((diff>0?'+':'')+money(diff) + (pct==null?'':` (<span class="${cls}">${pct.toFixed(1)}%</span>)`));
+  el('bigNew').textContent = money(newTotal);
+  el('bigDiff').innerHTML = (diff==null)? '—' : ((diff>0?'+':'')+money(diff) + (pct==null?'':` (<span class="${cls}">${pct.toFixed(1)}%</span>)`));
+  el('bigDiff').className = 'big ' + ((diff==null)?'':(diff>0?'pos':diff<0?'neg':''));
+}
+
+// Initial render
+recalc();
+
+// ===== Self-tests =====
+(function selfTests(){
+  const errs=[];
+  ['aiCount','bedrooms','distance','legacySeason','roundtrip','optSnow','optDrone'].forEach(id=>{ if(!el(id)) errs.push(`missing #${id}`) });
+  try{ recalc(); }catch(e){ errs.push('recalc threw: '+e.message); }
+  const badge = el('selftest');
+  if(badge){ badge.style.display='inline-block'; badge.textContent = errs.length? `Self-test: ${errs.length} issue(s)` : 'Self-test: OK'; badge.style.borderColor = errs.length? '#f87171' : '#28304a'; }
+  if(errs.length) console.error('[Calculator self-test]', errs); else console.log('[Calculator self-test] OK');
+})();
+</script>
+</body>
+</html>
